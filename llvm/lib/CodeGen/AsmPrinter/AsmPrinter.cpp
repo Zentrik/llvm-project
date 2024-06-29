@@ -2698,8 +2698,7 @@ void AsmPrinter::emitJumpTableInfo() {
   const Function &F = MF->getFunction();
   const TargetLoweringObjectFile &TLOF = getObjFileLowering();
   bool JTInDiffSection = !TLOF.shouldPutJumpTableInFunctionSection(
-      MJTI->getEntryKind() == MachineJumpTableInfo::EK_LabelDifference32 ||
-          MJTI->getEntryKind() == MachineJumpTableInfo::EK_LabelDifference64,
+      MJTI->getEntryKind() == MachineJumpTableInfo::EK_LabelDifference32,
       F);
   if (JTInDiffSection) {
     // Drop it in the readonly section.
@@ -2797,8 +2796,7 @@ void AsmPrinter::emitJumpTableEntry(const MachineJumpTableInfo *MJTI,
     return;
   }
 
-  case MachineJumpTableInfo::EK_LabelDifference32:
-  case MachineJumpTableInfo::EK_LabelDifference64: {
+  case MachineJumpTableInfo::EK_LabelDifference32: {
     // Each entry is the address of the block minus the address of the jump
     // table. This is used for PIC jump tables where gprel32 is not supported.
     // e.g.:
@@ -2806,8 +2804,7 @@ void AsmPrinter::emitJumpTableEntry(const MachineJumpTableInfo *MJTI,
     // If the .set directive avoids relocations, this is emitted as:
     //      .set L4_5_set_123, LBB123 - LJTI1_2
     //      .word L4_5_set_123
-    if (MJTI->getEntryKind() == MachineJumpTableInfo::EK_LabelDifference32 &&
-        MAI->doesSetDirectiveSuppressReloc()) {
+    if (MAI->doesSetDirectiveSuppressReloc()) {
       Value = MCSymbolRefExpr::create(GetJTSetSymbol(UID, MBB->getNumber()),
                                       OutContext);
       break;
