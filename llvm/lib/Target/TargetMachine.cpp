@@ -55,8 +55,6 @@ bool TargetMachine::isLargeGlobalObject(const GlobalObject *GO) const {
   // We should properly mark well-known section name prefixes as small/large,
   // because otherwise the output section may have the wrong section flags and
   // the linker will lay it out in an unexpected way.
-  // TODO: bring back lbss/ldata/lrodata checks after fixing accesses to large
-  // globals in the small code model.
   StringRef Name = GV->getSection();
   if (!Name.empty()) {
     auto IsPrefix = [&](StringRef Prefix) {
@@ -65,6 +63,8 @@ bool TargetMachine::isLargeGlobalObject(const GlobalObject *GO) const {
     };
     if (IsPrefix(".bss") || IsPrefix(".data") || IsPrefix(".rodata"))
       return false;
+    if (IsPrefix(".lbss") || IsPrefix(".ldata") || IsPrefix(".lrodata"))
+      return true;
   }
 
   // For x86-64, we treat an explicit GlobalVariable small code model to mean
