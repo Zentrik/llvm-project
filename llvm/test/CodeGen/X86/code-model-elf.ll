@@ -328,6 +328,7 @@ define dso_local ptr @lea_forced_small_data() #0 {
   ret ptr @forced_small_data
 }
 
+; TODO: make small and medium instruction sequence the same
 define dso_local i32 @load_forced_small_data() #0 {
 ; SMALL-STATIC-LABEL: load_forced_small_data:
 ; SMALL-STATIC:       # %bb.0:
@@ -353,12 +354,14 @@ define dso_local i32 @load_forced_small_data() #0 {
 ;
 ; MEDIUM-SMALL-DATA-PIC-LABEL: load_forced_small_data:
 ; MEDIUM-SMALL-DATA-PIC:       # %bb.0:
-; MEDIUM-SMALL-DATA-PIC-NEXT:    movl forced_small_data+8(%rip), %eax
+; MEDIUM-SMALL-DATA-PIC-NEXT:    leaq forced_small_data(%rip), %rax
+; MEDIUM-SMALL-DATA-PIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-SMALL-DATA-PIC-NEXT:    retq
 ;
 ; MEDIUM-PIC-LABEL: load_forced_small_data:
 ; MEDIUM-PIC:       # %bb.0:
-; MEDIUM-PIC-NEXT:    movl forced_small_data+8(%rip), %eax
+; MEDIUM-PIC-NEXT:    leaq forced_small_data(%rip), %rax
+; MEDIUM-PIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-PIC-NEXT:    retq
 ;
 ; LARGE-PIC-LABEL: load_forced_small_data:
@@ -384,6 +387,7 @@ define dso_local i32 @load_forced_small_data() #0 {
   ret i32 %rv
 }
 
+; TODO: fix small code model instruction sequences to use 64-bit constants
 define dso_local ptr @lea_forced_large_data() #0 {
 ; SMALL-STATIC-LABEL: lea_forced_large_data:
 ; SMALL-STATIC:       # %bb.0:
@@ -402,9 +406,8 @@ define dso_local ptr @lea_forced_large_data() #0 {
 ;
 ; SMALL-PIC-LABEL: lea_forced_large_data:
 ; SMALL-PIC:       # %bb.0:
-; SMALL-PIC-NEXT:    leaq _GLOBAL_OFFSET_TABLE_(%rip), %rcx
-; SMALL-PIC-NEXT:    movabsq $forced_large_data@GOTOFF, %rax
-; SMALL-PIC-NEXT:    addq %rcx, %rax
+; SMALL-PIC-NEXT:    leaq _GLOBAL_OFFSET_TABLE_(%rip), %rax
+; SMALL-PIC-NEXT:    leaq forced_large_data@GOTOFF(%rax), %rax
 ; SMALL-PIC-NEXT:    retq
 ;
 ; MEDIUM-SMALL-DATA-PIC-LABEL: lea_forced_large_data:
@@ -446,27 +449,25 @@ define dso_local ptr @lea_forced_large_data() #0 {
 define dso_local i32 @load_forced_large_data() #0 {
 ; SMALL-STATIC-LABEL: load_forced_large_data:
 ; SMALL-STATIC:       # %bb.0:
-; SMALL-STATIC-NEXT:    movabsq $forced_large_data+8, %rax
-; SMALL-STATIC-NEXT:    movl (%rax), %eax
+; SMALL-STATIC-NEXT:    movl forced_large_data+8(%rip), %eax
 ; SMALL-STATIC-NEXT:    retq
 ;
 ; MEDIUM-STATIC-LABEL: load_forced_large_data:
 ; MEDIUM-STATIC:       # %bb.0:
-; MEDIUM-STATIC-NEXT:    movabsq $forced_large_data+8, %rax
-; MEDIUM-STATIC-NEXT:    movl (%rax), %eax
+; MEDIUM-STATIC-NEXT:    movabsq $forced_large_data, %rax
+; MEDIUM-STATIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-STATIC-NEXT:    retq
 ;
 ; LARGE-STATIC-LABEL: load_forced_large_data:
 ; LARGE-STATIC:       # %bb.0:
-; LARGE-STATIC-NEXT:    movabsq $forced_large_data+8, %rax
-; LARGE-STATIC-NEXT:    movl (%rax), %eax
+; LARGE-STATIC-NEXT:    movabsq $forced_large_data, %rax
+; LARGE-STATIC-NEXT:    movl 8(%rax), %eax
 ; LARGE-STATIC-NEXT:    retq
 ;
 ; SMALL-PIC-LABEL: load_forced_large_data:
 ; SMALL-PIC:       # %bb.0:
 ; SMALL-PIC-NEXT:    leaq _GLOBAL_OFFSET_TABLE_(%rip), %rax
-; SMALL-PIC-NEXT:    movabsq $forced_large_data@GOTOFF, %rcx
-; SMALL-PIC-NEXT:    movl 8(%rax,%rcx), %eax
+; SMALL-PIC-NEXT:    movl forced_large_data@GOTOFF+8(%rax), %eax
 ; SMALL-PIC-NEXT:    retq
 ;
 ; MEDIUM-SMALL-DATA-PIC-LABEL: load_forced_large_data:
@@ -514,14 +515,14 @@ define dso_local i32 @load_global_data() #0 {
 ;
 ; MEDIUM-STATIC-LABEL: load_global_data:
 ; MEDIUM-STATIC:       # %bb.0:
-; MEDIUM-STATIC-NEXT:    movabsq $global_data+8, %rax
-; MEDIUM-STATIC-NEXT:    movl (%rax), %eax
+; MEDIUM-STATIC-NEXT:    movabsq $global_data, %rax
+; MEDIUM-STATIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-STATIC-NEXT:    retq
 ;
 ; LARGE-STATIC-LABEL: load_global_data:
 ; LARGE-STATIC:       # %bb.0:
-; LARGE-STATIC-NEXT:    movabsq $global_data+8, %rax
-; LARGE-STATIC-NEXT:    movl (%rax), %eax
+; LARGE-STATIC-NEXT:    movabsq $global_data, %rax
+; LARGE-STATIC-NEXT:    movl 8(%rax), %eax
 ; LARGE-STATIC-NEXT:    retq
 ;
 ; SMALL-PIC-LABEL: load_global_data:
@@ -531,7 +532,8 @@ define dso_local i32 @load_global_data() #0 {
 ;
 ; MEDIUM-SMALL-DATA-PIC-LABEL: load_global_data:
 ; MEDIUM-SMALL-DATA-PIC:       # %bb.0:
-; MEDIUM-SMALL-DATA-PIC-NEXT:    movl global_data+8(%rip), %eax
+; MEDIUM-SMALL-DATA-PIC-NEXT:    leaq global_data(%rip), %rax
+; MEDIUM-SMALL-DATA-PIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-SMALL-DATA-PIC-NEXT:    retq
 ;
 ; MEDIUM-PIC-LABEL: load_global_data:
@@ -634,14 +636,14 @@ define dso_local i32 @load_unknown_size_data() #0 {
 ;
 ; MEDIUM-STATIC-LABEL: load_unknown_size_data:
 ; MEDIUM-STATIC:       # %bb.0:
-; MEDIUM-STATIC-NEXT:    movabsq $unknown_size_data+8, %rax
-; MEDIUM-STATIC-NEXT:    movl (%rax), %eax
+; MEDIUM-STATIC-NEXT:    movabsq $unknown_size_data, %rax
+; MEDIUM-STATIC-NEXT:    movl 8(%rax), %eax
 ; MEDIUM-STATIC-NEXT:    retq
 ;
 ; LARGE-STATIC-LABEL: load_unknown_size_data:
 ; LARGE-STATIC:       # %bb.0:
-; LARGE-STATIC-NEXT:    movabsq $unknown_size_data+8, %rax
-; LARGE-STATIC-NEXT:    movl (%rax), %eax
+; LARGE-STATIC-NEXT:    movabsq $unknown_size_data, %rax
+; LARGE-STATIC-NEXT:    movl 8(%rax), %eax
 ; LARGE-STATIC-NEXT:    retq
 ;
 ; SMALL-PIC-LABEL: load_unknown_size_data:
