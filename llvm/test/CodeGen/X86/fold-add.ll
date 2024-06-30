@@ -45,7 +45,8 @@ define dso_local i64 @one() #0 {
 ;
 ; MSTATIC-LABEL: one:
 ; MSTATIC:       # %bb.0: # %entry
-; MSTATIC-NEXT:    movabsq $foo+1, %rax
+; MSTATIC-NEXT:    movabsq $foo, %rax
+; MSTATIC-NEXT:    incq %rax
 ; MSTATIC-NEXT:    retq
 ;
 ; MPIC-LABEL: one:
