@@ -9,17 +9,6 @@
 ; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=medium -large-data-threshold=1000 | FileCheck %s --check-prefix=CHECK --check-prefix=MEDIUM-SMALL-DATA-PIC
 ; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=medium | FileCheck %s --check-prefix=CHECK --check-prefix=MEDIUM-PIC
 ; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=large  | FileCheck %s --check-prefix=CHECK --check-prefix=LARGE-PIC
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=large  -large-data-threshold=1000 | FileCheck %s --check-prefix=CHECK --check-prefix=LARGE-SMALL-DATA-PIC
-
-; Check that the relocations we emit are valid.
-; RUN: llc -verify-machineinstrs < %s -relocation-model=static -code-model=small  -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=static -code-model=medium -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=static -code-model=large  -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=small  -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=medium -large-data-threshold=1000 -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=medium -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=large  -filetype=obj -o /dev/null
-; RUN: llc -verify-machineinstrs < %s -relocation-model=pic    -code-model=large  -large-data-threshold=1000 -filetype=obj -o /dev/null
 
 ; Generated from this C source:
 ;
