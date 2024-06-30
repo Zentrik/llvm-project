@@ -21,6 +21,9 @@
 ; SMALL: .data {{.*}} WA {{.*}}
 ; SMALL: .data.x {{.*}} WA {{.*}}
 ; SMALL: .data0 {{.*}} WA {{.*}}
+; SMALL: .ldata {{.*}} WAl {{.*}}
+; SMALL: .ldata.x {{.*}} WAl {{.*}}
+; SMALL: .ldata0 {{.*}} WA {{.*}}
 ; SMALL: foo {{.*}} WA {{.*}}
 ; SMALL: .bss {{.*}} WA {{.*}}
 ; SMALL: .rodata {{.*}} A {{.*}}
@@ -32,8 +35,6 @@
 ; SMALL-DS: .data.x {{.*}} WA {{.*}}
 ; SMALL-DS: .data0 {{.*}} WA {{.*}}
 ; SMALL-DS: .data.data {{.*}} WA {{.*}}
-; SMALL-DS: force_small {{.*}} WA {{.*}}
-; SMALL-DS: force_large {{.*}} WAl {{.*}}
 ; SMALL-DS: foo {{.*}} WA {{.*}}
 ; SMALL-DS: .bss.bss {{.*}} WA {{.*}}
 ; SMALL-DS: .rodata.rodata {{.*}} A {{.*}}
@@ -45,6 +46,8 @@
 ; LARGE: .data.x {{.*}} WA {{.*}}
 ; LARGE: .data0 {{.*}} WAl {{.*}}
 ; LARGE: .ldata {{.*}} WAl {{.*}}
+; LARGE: .ldata.x {{.*}} WAl {{.*}}
+; LARGE: .ldata0 {{.*}} WAl {{.*}}
 ; LARGE: foo {{.*}} WAl {{.*}}
 ; LARGE: .bss {{.*}} WA {{.*}}
 ; LARGE: .lbss {{.*}} WAl {{.*}}
@@ -58,8 +61,6 @@
 ; LARGE-DS: .data.x {{.*}} WA {{.*}}
 ; LARGE-DS: .data0 {{.*}} WAl {{.*}}
 ; LARGE-DS: .ldata.data {{.*}} WAl {{.*}}
-; LARGE-DS: force_small {{.*}} WA {{.*}}
-; LARGE-DS: force_large {{.*}} WAl {{.*}}
 ; LARGE-DS: foo {{.*}} WAl {{.*}}
 ; LARGE-DS: .bss {{.*}} WA {{.*}}
 ; LARGE-DS: .lbss.bss {{.*}} WAl {{.*}}
@@ -76,10 +77,6 @@ target triple = "x86_64--linux"
 @data_with_explicit_section2 = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], section ".data.x"
 @data_with_explicit_section0 = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], section ".data0"
 @data = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0]
-@data_force_small = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], code_model "small", section "force_small"
-@data_force_large = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], code_model "large", section "force_large"
-@data_force_small_ldata = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], code_model "small", section ".ldata"
-@data_force_large_data = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], code_model "large", section ".data"
 @foo_with_explicit_section = internal global [10 x i64] [i64 1, i64 2, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0, i64 0], section "foo"
 @bss_with_explicit_section = internal global [10 x i64] zeroinitializer, section ".bss"
 @bss = internal global [10 x i64] zeroinitializer
