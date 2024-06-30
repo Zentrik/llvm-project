@@ -43,11 +43,10 @@ bool TargetMachine::isLargeGlobalObject(const GlobalObject *GO) const {
   if (getTargetTriple().getArch() != Triple::x86_64)
     return false;
 
-  auto *GV = dyn_cast<GlobalVariable>(GO);
-
-  // Functions/GlobalIFuncs are only large under the large code model.
-  if (!GV)
+  if (isa<Function>(GO))
     return getCodeModel() == CodeModel::Large;
+
+  auto *GV = cast<GlobalVariable>(GO);
 
   if (GV->isThreadLocal())
     return false;
