@@ -615,7 +615,7 @@ static unsigned getEntrySizeForKind(SectionKind Kind) {
 /// DataSections.
 static StringRef getSectionPrefixForGlobal(SectionKind Kind, bool IsLarge) {
   if (Kind.isText())
-    return IsLarge ? ".ltext" : ".text";
+    return ".text";
   if (Kind.isReadOnly())
     return IsLarge ? ".lrodata" : ".rodata";
   if (Kind.isBSS())
