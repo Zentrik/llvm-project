@@ -14,4 +14,5 @@
 using namespace mlir;
 using namespace test;
 
+#define GET_OP_CLASSES
 #include "TestOps.cpp.inc"

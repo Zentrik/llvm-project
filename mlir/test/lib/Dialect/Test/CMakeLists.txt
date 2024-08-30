@@ -31,6 +31,8 @@ mlir_tablegen(TestOpEnums.cpp.inc -gen-enum-defs)
 add_public_tablegen_target(MLIRTestEnumDefIncGen)
 
 set(LLVM_TARGET_DEFINITIONS TestOps.td)
+mlir_tablegen(TestOps.h.inc -gen-op-decls)
+mlir_tablegen(TestOps.cpp.inc -gen-op-defs)
 mlir_tablegen(TestOpsDialect.h.inc -gen-dialect-decls -dialect=test)
 mlir_tablegen(TestOpsDialect.cpp.inc -gen-dialect-defs -dialect=test)
 mlir_tablegen(TestPatterns.inc -gen-rewriters)
@@ -40,8 +42,6 @@ set(LLVM_TARGET_DEFINITIONS TestOpsSyntax.td)
 mlir_tablegen(TestOpsSyntax.h.inc -gen-op-decls)
 mlir_tablegen(TestOpsSyntax.cpp.inc -gen-op-defs)
 add_public_tablegen_target(MLIRTestOpsSyntaxIncGen)
-
-add_sharded_ops(TestOps 20)
 
 # Exclude tests from libMLIR.so
 add_mlir_library(MLIRTestDialect
@@ -56,7 +56,6 @@ add_mlir_library(MLIRTestDialect
   TestTypes.cpp
   TestOpsSyntax.cpp
   TestDialectInterfaces.cpp
-  ${SHARDED_SRCS}
 
   EXCLUDE_FROM_LIBMLIR
 
@@ -67,7 +66,6 @@ add_mlir_library(MLIRTestDialect
   MLIRTestTypeDefIncGen
   MLIRTestOpsIncGen
   MLIRTestOpsSyntaxIncGen
-  MLIRTestOpsShardGen
 
   LINK_LIBS PUBLIC
   MLIRControlFlowInterfaces
