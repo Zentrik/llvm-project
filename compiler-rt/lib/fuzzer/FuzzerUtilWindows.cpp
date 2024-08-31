@@ -21,7 +21,7 @@
 #include <signal.h>
 #include <stdio.h>
 #include <sys/types.h>
-#include <pthread.h>
+#include <thread>
 // clang-format off
 #include <windows.h>
 // These must be included after windows.h.
