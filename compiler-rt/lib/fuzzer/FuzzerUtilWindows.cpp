@@ -241,6 +241,8 @@ size_t PageSize() {
 
 void SetThreadName(std::thread &thread, const std::string &name) {
   (void)pthread_setname_np(thread.native_handle(), name.c_str());
+}
+
 } // namespace fuzzer
 
 #endif // LIBFUZZER_WINDOWS
