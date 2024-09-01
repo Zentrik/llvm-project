@@ -196,13 +196,11 @@ macro(add_tablegen target project)
     set(${project}_TABLEGEN_DEFAULT "${LLVM_TABLEGEN}")
   endif()
 
-  if(ADD_TABLEGEN_EXPORT)
-    set(${project}_TABLEGEN "${${project}_TABLEGEN_DEFAULT}" CACHE
-      STRING "Native TableGen executable. Saves building one when cross-compiling.")
-  else()
-    # Internal tablegen
-    set(${project}_TABLEGEN "${${project}_TABLEGEN_DEFAULT}" CACHE
-      STRING "Native TableGen executable. Saves building one when cross-compiling.")
+  set(${project}_TABLEGEN "${${project}_TABLEGEN_DEFAULT}" CACHE
+    STRING "Native TableGen executable. Saves building one when cross-compiling.")
+
+  if(NOT ADD_TABLEGEN_EXPORT)
+      # Internal tablegen
     set_target_properties(${target} PROPERTIES EXCLUDE_FROM_ALL ON)
   endif()
 
