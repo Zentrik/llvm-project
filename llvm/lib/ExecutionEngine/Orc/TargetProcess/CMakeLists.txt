@@ -9,7 +9,7 @@ if( LLVM_USE_INTEL_JITEVENTS )
   if(NOT DEFINED ITTAPI_SOURCE_DIR)
       set(ITTAPI_SOURCE_DIR ${PROJECT_BINARY_DIR})
   endif()
-  include_directories(${ITTAPI_SOURCE_DIR}/ittapi/include/ )
+  include_directories(${ITTAPI_SOURCE_DIR}/include/ )
 endif()
 
 add_llvm_component_library(LLVMOrcTargetProcess
