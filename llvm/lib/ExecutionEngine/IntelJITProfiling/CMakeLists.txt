@@ -12,18 +12,21 @@ if(NOT DEFINED ITTAPI_SOURCE_DIR)
     set(ITTAPI_SOURCE_DIR ${PROJECT_BINARY_DIR}/ittapi)
 endif()
 
-if(NOT EXISTS ${ITTAPI_SOURCE_DIR})
-    execute_process(COMMAND ${GIT_EXECUTABLE} clone ${ITTAPI_GIT_REPOSITORY} ${ITTAPI_SOURCE_DIR}
-                    WORKING_DIRECTORY ${ITTAPI_SOURCE_DIR}/..
-                    RESULT_VARIABLE GIT_CLONE_RESULT)
+if(NOT EXISTS "${ITTAPI_SOURCE_DIR}")
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" clone "${ITTAPI_GIT_REPOSITORY}" "${ITTAPI_SOURCE_DIR}"
+        RESULT_VARIABLE GIT_CLONE_RESULT
+    )
     if(NOT GIT_CLONE_RESULT EQUAL "0")
-        message(FATAL_ERROR "git clone ${ITTAPI_GIT_REPOSITORY} failed with ${GIT_CLONE_RESULT}, please clone ${ITTAPI_GIT_REPOSITORY}")
+        message(FATAL_ERROR "git clone ${ITTAPI_GIT_REPOSITORY} failed with ${GIT_CLONE_RESULT}, please clone ${ITTAPI_GIT_REPOSITORY} manually")
     endif()
-    execute_process(COMMAND ${GIT_EXECUTABLE} checkout ${ITTAPI_GIT_TAG}
-                    WORKING_DIRECTORY ${ITTAPI_SOURCE_DIR}
-                    RESULT_VARIABLE GIT_CHECKOUT_RESULT)
+
+    execute_process(
+        COMMAND "${GIT_EXECUTABLE}" -C "${ITTAPI_SOURCE_DIR}" checkout "${ITTAPI_GIT_TAG}"
+        RESULT_VARIABLE GIT_CHECKOUT_RESULT
+    )
     if(NOT GIT_CHECKOUT_RESULT EQUAL "0")
-        message(FATAL_ERROR "git checkout ${ITTAPI_GIT_TAG} failed with ${GIT_CHECKOUT_RESULT}, please checkout ${ITTAPI_GIT_TAG} at ${ITTAPI_SOURCE_DIR}")
+        message(FATAL_ERROR "git checkout ${ITTAPI_GIT_TAG} failed with ${GIT_CHECKOUT_RESULT}, please checkout ${ITTAPI_GIT_TAG} at ${ITTAPI_SOURCE_DIR} manually")
     endif()
 endif()
 
