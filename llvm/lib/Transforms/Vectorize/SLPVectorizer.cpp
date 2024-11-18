@@ -13895,7 +13895,7 @@ Value *BoUpSLP::vectorizeTree(
             if (const TreeEntry *ETE = getTreeEntry(V))
               V = ETE->VectorizedValue;
             if (auto *IV = dyn_cast<Instruction>(V);
-                !IV || IV == Vec || IV->comesBefore(cast<Instruction>(Vec)))
+                !IV || IV == Vec || (IV->getParent() == cast<Instruction>(Vec)->getParent() && IV->comesBefore(cast<Instruction>(Vec))))
               Ex = Builder.CreateExtractElement(V, ES->getIndexOperand());
             else
               Ex = Builder.CreateExtractElement(Vec, Lane);
