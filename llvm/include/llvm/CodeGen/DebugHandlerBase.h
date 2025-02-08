@@ -128,7 +128,6 @@ public:
   void beginFunction(const MachineFunction *MF) override;
   void endFunction(const MachineFunction *MF) override;
 
-
   void beginBasicBlockSection(const MachineBasicBlock &MBB) override;
   void endBasicBlockSection(const MachineBasicBlock &MBB) override;
 
